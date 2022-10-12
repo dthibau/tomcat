@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project name="examples" basedir="." default="usage">
+	<property file="build.properties" />
+	<property name="web.dir" value="examples" />
+	<property name="name" value="examples" />
+	<target name="usage">
+		<echo message="" />
+		<echo message="${name} build file" />
+		<echo message="-----------------------------------" />
+
+		<echo message="Lib directory of tomcat : ${appserver.lib}" />
+
+
+		<echo message="" />
+		<echo message="Available targets are:" />
+		<echo message="" />
+		<echo message="deploy --> Deploy application as directory" />
+		<echo message="deploywar --> Deploy application as a WAR file" />
+		<echo message="reload --> Reload application in Tomcat" />
+		<echo message="start --> Start Tomcat application" />
+		<echo message="stop --> Stop Tomcat application" />
+		<echo message="list --> List Tomcat applications" />
+		<echo message="undeploy --> Remove deployed files" />
+		<echo message="" />
+	</target>
+	<!-- ============================================================== -->
+	<!-- Tomcat tasks - remove these if you don't have Tomcat installed -->
+	<!-- ============================================================== -->
+	<path id="catalina-ant-classpath">
+		<!-- We need the Catalina jars for Tomcat -->
+		<!-- * for other app servers - check the docs -->
+		<fileset dir="${appserver.lib}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${appserver.home}/bin">
+	                <include name="tomcat-juli.jar"/>
+		</fileset>
+	</path>
+
+	<taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="catalina-ant-classpath"/>
+  	<taskdef name="list"      classname="org.apache.catalina.ant.ListTask" classpathref="catalina-ant-classpath"/>
+  	<taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="catalina-ant-classpath"/>
+  	<taskdef name="findleaks" classname="org.apache.catalina.ant.FindLeaksTask" classpathref="catalina-ant-classpath"/>
+  	<taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="catalina-ant-classpath"/>
+  	<taskdef name="start"     classname="org.apache.catalina.ant.StartTask" classpathref="catalina-ant-classpath"/>
+  	<taskdef name="stop"      classname="org.apache.catalina.ant.StopTask" classpathref="catalina-ant-classpath"/>
+  	<taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="catalina-ant-classpath"/>
+
+	<target name="deploy" description="Deploy web application">
+	  <deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+	    path="${path}" war="${warFile}" update="true" />
+	</target>
+	<target name="undeploy" description="Undeploy web application">
+	  <undeploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+	   path="${path}"/>
+	</target>
+	<target name="reload" description="Reload application in Tomcat">
+		<reload url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/${name}" />
+	</target>
+	<target name="start" description="Start Tomcat application">
+		<start url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/${name}" />
+	</target>
+	<target name="stop" description="Stop Tomcat application">
+		<stop url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="/${name}" />
+	</target>
+	<target name="list" description="List Tomcat applications">
+		<list url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" />
+	</target>
+	<!-- End Tomcat tasks -->
+</project>
